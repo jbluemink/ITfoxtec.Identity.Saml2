@@ -52,6 +52,19 @@ namespace ITfoxtec.Identity.Saml2
         public string Version { get; set; }
 
         /// <summary>
+        /// [Optional]
+        /// Indirectly identifies the location to which the Response message should be returned to the
+        /// requester.It applies only to profiles in which the requester is different from the presenter, such as the
+        /// Web Browser SSO profile in [SAMLProf]. The identity provider MUST have a trusted means to map
+        /// the index value in the attribute to a location associated with the requester. [SAMLMeta] provides one
+        /// possible mechanism.If omitted, then the identity provider MUST return the Response message to
+        /// the default location associated with the requester for the profile of use. If the index specified is invalid,
+        /// then the identity provider MAY return an error Response or it MAY use the default location.This
+        /// attribute is mutually exclusive with the AssertionConsumerServiceURL and ProtocolBinding attributes
+        /// </summary>
+        public UInt16? AssertionConsumerServiceIndex { get; set; }
+
+        /// <summary>
         /// [Required]
         /// The time instant of issue of the request. The time value is encoded in UTC, as described in Section 1.3.3.
         /// </summary>
@@ -137,6 +150,11 @@ namespace ITfoxtec.Identity.Saml2
             yield return new XAttribute(Schemas.Saml2Constants.Message.Id, IdAsString);
             yield return new XAttribute(Schemas.Saml2Constants.Message.Version, Version);
             yield return new XAttribute(Schemas.Saml2Constants.Message.IssueInstant, IssueInstant.UtcDateTime.ToString(Schemas.Saml2Constants.DateTimeFormat, CultureInfo.InvariantCulture));
+
+            if (AssertionConsumerServiceIndex != null)
+            {
+                yield return new XAttribute(Schemas.Saml2Constants.Message.AssertionConsumerServiceIndex, AssertionConsumerServiceIndex);
+            }
 
             if (!string.IsNullOrWhiteSpace(Consent))
             {
